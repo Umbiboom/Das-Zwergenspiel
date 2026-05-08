@@ -497,7 +497,7 @@ if(p.type !== "block" && p.type !== "hill") {
         const slope = Math.abs(rightTop.y - leftTop.y) / (rightTop.x - leftTop.x);
         const slopePercent = Math.min(slope / 0.5 * 100, 100);
 
-        const tolerance = 10;  // ↑ vergrößert, damit er etwas „reinrutschen“ darf
+        const tolerance = 5;  // ↑ vergrößert, damit er etwas „reinrutschen“ darf
 
         // Zwerg "klebt" auf Plattform, solange er horizontal drüber steht
         if(dwarfFootY >= platformY - tolerance && dwarfFootY <= platformY + 40) {  // obere Grenze unverändert
