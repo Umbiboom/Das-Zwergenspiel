@@ -234,7 +234,7 @@ export function drawKing(ctx, king){
 
 
 export function drawKey(ctx, dwarf, key){
-
+  if (!key) return;
   const p = 4;
   ctx.save();
   ctx.translate(key.x, key.y);
@@ -341,7 +341,7 @@ export function drawPlatforms(ctx, platforms){
 
 }
 export function drawBackgroundShapes(ctx, shapes){
-
+  if (!Array.isArray(shapes)) return; 
 
   shapes.forEach(p => {
 

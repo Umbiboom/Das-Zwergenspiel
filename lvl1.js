@@ -35,7 +35,7 @@ export const door = {x:645, y:150, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
 
 
 
-export const key = {x:570, y: 85};
+export const key = {x:70, y: 285};
 // --- Level 1 Daten ---
 export const dwarf = {
   x: 120,
