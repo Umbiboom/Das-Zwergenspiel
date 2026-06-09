@@ -1,3 +1,40 @@
+#startButton {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%);
+
+  z-index: 1000; /* höher als die grünen Felder */
+
+  background: white;
+  color: black;
+  border: 3px solid black;
+  border-radius: 12px;
+  padding: 20px 40px;
+  font-size: 28px;
+  font-weight: bold;
+
+  animation: pulsieren 1s ease-in-out infinite;;
+}
+
+.zone {
+  z-index: 1;
+}
+
+
+@keyframes pulsieren {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
 canvas {
   background-image: url("Coverbild.png");
   background-size: 100%;
@@ -8,15 +45,16 @@ canvas {
 }
 body {
   background-image: url("Hintergrundbild.png");
-  background-position: 130% 0px;
+  background-position: -400px 0px;
+  background-size: 100%;
 
   margin: 0;               /* keine Standard-Ränder */
   text-align: center;      /* alles horizontal zentrieren */
 }
 
 h1 {
-  color: green;            /* Textfarbe grün */
-  background-color: white; /* weißer Hintergrund */
+  color: rgb(83, 255, 86);            /* Textfarbe grün */
+  background-color: rgb(0, 128, 6); /* weißer Hintergrund */
   padding: 20px 200px;      /* Abstand innerhalb der Box */
   font-family: Arial, sans-serif;
   font-size: 3em;          /* Titelgröße */
@@ -28,6 +66,8 @@ h1 {
   position: relative;
   width: 800px;
   height: 400px;
+
+  display: inline-block; 
 }
 
 #canvas {
@@ -81,3 +121,5 @@ h1 {
   width: 100%;
   height: 30%;
 }
+
+
