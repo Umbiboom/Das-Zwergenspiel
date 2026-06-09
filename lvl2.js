@@ -24,7 +24,7 @@ export const king = {x:300,y:200};
 
 export const background = "#002346";
 
-export const door = {x:645, y:150, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
+export const door = {x:645, y:350, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
 
 
 

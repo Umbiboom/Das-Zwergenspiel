@@ -31,7 +31,7 @@ export const king = {x:300,y:200};
 
 export const background = "#0080ff";
 
-export const door = {x:645, y:150, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
+export const door = {x:645, y: 150, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
 
 
 
@@ -208,12 +208,14 @@ export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, ke
     if (dwarf.nachrichtBubble1 && dwarf.m) {
     textZeigen(ctx, dwarf.nachrichtBubble1.n, dwarf.nachrichtBubble1.x, dwarf.nachrichtBubble1.y, "black");
 
-    // Nachricht nach 3 Sekunden verschwinden lassen
-    setTimeout(() => {
-        dwarf.nachrichtBubble1 = null;
-        dwarf.m = false;
-    }, 3000);
-}
+      // Nachricht nach 3 Sekunden verschwinden lassen
+      setTimeout(() => {
+          dwarf.nachrichtBubble1 = null;
+          dwarf.m = false;
+      }, 3000);
+    }
+
+
     if (dwarf.nachrichtBubble2 && dwarf.m) {textZeigen(ctx, dwarf.nachrichtBubble2.n, dwarf.nachrichtBubble2.x, dwarf.nachrichtBubble2.y, "black")};
     if (dwarf.nachricht3) {textZeigen(ctx, dwarf.nachricht3.n, dwarf.nachricht3.x, dwarf.nachricht3.y, dwarf.nachricht3.c)};
     if (dwarf.nachricht4) {textZeigen(ctx, dwarf.nachricht4.n, dwarf.nachricht4.x, dwarf.nachricht4.y, dwarf.nachricht4.c)};

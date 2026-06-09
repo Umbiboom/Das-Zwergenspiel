@@ -1,12 +1,15 @@
 canvas {
-  background: #87CEEB; /* nur der Canvas-Hintergrund */
+  background-image: url("Coverbild.png");
+  background-size: 100%;
   display: block;
   margin: 0 auto;
   border: 3px solid #444;
   touch-action: none;
 }
 body {
-  background-color: black; /* Hintergrund schwarz */
+  background-image: url("Hintergrundbild.png");
+  background-position: 130% 0px;
+
   margin: 0;               /* keine Standard-Ränder */
   text-align: center;      /* alles horizontal zentrieren */
 }
@@ -32,13 +35,14 @@ h1 {
 }
 
 #startScreen {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 800px;
   height: 400px;
-  background: rgba(0, 0, 0, 0.481);
+  background: rgba(0, 0, 0, 0.244);
   z-index: 999;
+
 }
 
 /* allgemeine Zone */

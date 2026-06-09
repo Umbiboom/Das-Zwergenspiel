@@ -816,4 +816,3 @@ export function drawCovers(ctx, dwarf, covers) {
         }
     }
 }
-
