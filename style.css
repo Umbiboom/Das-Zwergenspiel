@@ -161,11 +161,11 @@ canvas {
 
 /* DREH-HINWEIS */
 
+
 #rotateSign {
   display: none;
 
   position: fixed;
-
   left: 50%;
   top: 50%;
 
@@ -179,39 +179,25 @@ canvas {
   background: radial-gradient(circle, #d8b07a 0%, #b07a3e 100%);
   border: 8px solid #5a3512;
 
-  box-sizing: border-box;
-
-  padding: 80px;
-
-  justify-content: center;
-  align-items: center;
-
-  text-align: center;
-
   color: white;
+  text-shadow: 3px 3px 4px black;
   font-size: 48px;
   font-weight: bold;
 
-  text-shadow: 3px 3px 4px black;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  padding: 80px;
+  box-sizing: border-box;
 
   z-index: 20000;
 }
 
 /* Nur im Hochformat anzeigen */
 
-@media (orientation: portrait) {
+@media screen and (orientation: portrait) {
   #rotateSign {
-    display: flex;
-  }
-}
-
-/* iPhone / iPad */
-
-@supports (-webkit-touch-callout: none) {
-  #leftBtn,
-  #rightBtn,
-  #jumpBtn {
-    min-width: 100px;
-    min-height: 100px;
+    display: flex !important;
   }
 }
