@@ -1,7 +1,7 @@
 import * as lvl1 from "./lvl1.js";
 import * as lvl2 from "./lvl2.js";
 import * as lvl3 from "./lvl3.js";
-import { bindButton } from "./functions.js";
+import { bindButton, safeArray, createLevel, handleTouch, handleTouchEnd } from "./functions.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -10,11 +10,6 @@ const ctx = canvas.getContext("2d");
 const startScreen = document.getElementById("startScreen");
 let started = false;
 
-function startGame() {
-  if (started) return;
-  started = true;
-  startScreen.style.display = "none";
-}
 
 // Tastatur
 document.addEventListener("keydown", startGame);
@@ -24,7 +19,6 @@ startScreen.addEventListener("click", startGame);
 startScreen.addEventListener("touchstart", startGame, {
   passive: false
 });
-
 
 
 const leftBtn = document.getElementById("leftBtn");
@@ -48,26 +42,7 @@ const levels = [lvl1, lvl2, lvl3];
 let currentLevelIndex = 0;
 
 // --- Helper: Level sauber in Daten umwandeln ---
-function safeArray(v) {
-  return Array.isArray(v) ? [...v] : [];
-}
 
-function createLevel(lvl) {
-  return {
-    dwarf: { ...lvl.dwarf },
-    backgroundshapes: safeArray(lvl.backgroundshapes),
-    foregroundshapes: safeArray(lvl.foregroundshapes),
-    platforms: safeArray(lvl.platforms),
-    bubbles: safeArray(lvl.bubbles),
-    covers: safeArray(lvl.covers),
-    door: { ...lvl.door },
-    king: lvl.king ? { ...lvl.king } : null,
-    key: lvl.key ? { ...lvl.key } : { x: 500, y: 250 },
-    carriage: { ...lvl.carriage },
-    background: lvl.background,
- 
-  };
-}
 
 // --- aktuelles Level ---
 let currentLevel = createLevel(levels[currentLevelIndex]);
@@ -79,40 +54,14 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 canvas.addEventListener("touchstart", handleTouch, { passive: false });
 canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
 
-function handleTouch(e) {
-  e.preventDefault();
-
-  const touch = e.touches[0];
-  const x = touch.clientX;
-  const y = touch.clientY;
-
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
-  // --- UNTEN = SPRINGEN ---
-  if (y > height * 0.7) {
-    keys["Space"] = true;
-    return;
-  }
-
-  // --- OBEN LINKS = LINKS ---
-  if (x < width / 2) {
-    keys["ArrowLeft"] = true;
-  }
-
-  // --- OBEN RECHTS = RECHTS ---
-  else {
-    keys["ArrowRight"] = true;
-  }
+export function startGame() {
+  if (started) return;
+  started = true;
+  startScreen.style.display = "none";
 }
 
-function handleTouchEnd() {
-  keys["ArrowLeft"] = false;
-  keys["ArrowRight"] = false;
-  keys["Space"] = false;
-}
 // --- Levelwechsel ---
-function loadNextLevel() {
+export function loadNextLevel() {
   const dwarf = currentLevel.dwarf;
 
   if (dwarf.isLoadingNextLevel) return;
@@ -151,7 +100,7 @@ function loadNextLevel() {
 }
 
 // --- Game Loop ---
-function gameLoop() {
+export function gameLoop() {
   if (!started) {
     requestAnimationFrame(gameLoop);
     return;
