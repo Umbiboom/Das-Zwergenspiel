@@ -69,7 +69,8 @@ function safeArray(v) {
 function createLevel(lvl) {
   return {
     dwarf: { ...lvl.dwarf },
-    shapes: safeArray(lvl.shapes),
+    backgroundshapes: safeArray(lvl.backgroundshapes),
+    foregroundshapes: safeArray(lvl.foregroundshapes),
     platforms: safeArray(lvl.platforms),
     bubbles: safeArray(lvl.bubbles),
     covers: safeArray(lvl.covers),
@@ -77,7 +78,8 @@ function createLevel(lvl) {
     king: lvl.king ? { ...lvl.king } : null,
     key: lvl.key ? { ...lvl.key } : { x: 500, y: 250 },
     carriage: { ...lvl.carriage },
-    background: lvl.background
+    background: lvl.background,
+ 
   };
 }
 
@@ -186,7 +188,8 @@ function gameLoop() {
       keys,
       gravity,
       currentLevel.background,
-      currentLevel.shapes,
+      currentLevel.backgroundshapes,
+      currentLevel.foregroundshapes,
       currentLevel.carriage,
       currentLevel.covers
     );

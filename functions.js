@@ -174,16 +174,23 @@ export function drawDwarf(ctx, dwarf){
   ctx.restore();
 }
 
-export function drawKing(ctx, king){
+export function drawKing(ctx, king, dwarf){
 
   const p = 4;
+
   ctx.save();
-  ctx.translate(king.x, king.y);
+
+  // König schaut zum Zwerg
+  if (dwarf.x > king.x) {
+    ctx.translate(king.x + 6.5 * p, king.y);
+    ctx.scale(-1, 1);
+  } else {
+    ctx.translate(king.x, king.y);
+  }
 
   // Körper
   ctx.fillStyle = "#aa0303";
   ctx.fillRect(0,2*p,4*p,10.5*p);
-
 
   ctx.fillStyle = "#aa0303";
   ctx.beginPath();
@@ -208,30 +215,31 @@ export function drawKing(ctx, king){
   ctx.closePath();
   ctx.fill();
 
-  //Bart 
-  ctx.fillStyle = "#ffffff"
-  ctx.beginPath(); 
+  // Bart
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
   ctx.moveTo(3*p,0.5*p);
-  ctx.lineTo(0*p, 1*p); 
-  ctx.lineTo(-0.5*p, 8*p); 
-  ctx.closePath(); 
-  ctx.fill()
+  ctx.lineTo(0*p,1*p);
+  ctx.lineTo(-0.5*p,8*p);
+  ctx.closePath();
+  ctx.fill();
 
-  // Auge 
+  // Auge
   ctx.fillStyle = "#000";
-  ctx.fillRect(0.3*p,-0.5*p,p,0.5*p)
+  ctx.fillRect(0.3*p,-0.5*p,p,0.5*p);
 
-  // Nase 
-  ctx.fillStyle = "#a86303"; 
-  ctx.beginPath(); 
-  ctx.moveTo(0*p,-1*p); 
-  ctx.lineTo(0*p, 1.5*p); 
-  ctx.lineTo(-1*p, 1.5*p); 
-  ctx.closePath(); 
+  // Nase
+  ctx.fillStyle = "#a86303";
+  ctx.beginPath();
+  ctx.moveTo(0*p,-1*p);
+  ctx.lineTo(0*p,1.5*p);
+  ctx.lineTo(-1*p,1.5*p);
+  ctx.closePath();
   ctx.fill();
 
   ctx.restore();
 }
+
 
 
 export function drawKey(ctx, dwarf, key){
@@ -341,10 +349,60 @@ export function drawPlatforms(ctx, platforms){
   });
 
 }
-export function drawBackgroundShapes(ctx, shapes){
-  if (!Array.isArray(shapes)) return; 
+export function drawBackgroundShapes(ctx, backgroundshapes){
+  if (!Array.isArray(backgroundshapes)) return; 
 
-  shapes.forEach(p => {
+  backgroundshapes.forEach(p => {
+
+    const angle = p.angle || 0;
+
+    const cx = p.x + p.w/2;
+    const cy = p.y + p.h/2;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.fillStyle = p.c;
+
+    if(p.type === "hill"){
+
+      ctx.beginPath();
+
+      // links unten
+      ctx.moveTo(-p.w/2, p.h/2);
+
+      ctx.quadraticCurveTo(
+        0,          // Mitte
+        -p.h * 1.5, // Hügelhöhe
+        p.w/2,
+        p.h/2
+      );
+
+      ctx.lineTo(-p.w/2, p.h/2);
+      ctx.closePath();
+      ctx.fill();
+
+    } else {
+
+      ctx.fillRect(
+        -p.w/2,
+        -p.h/2,
+        p.w,
+        p.h
+      );
+
+    }
+
+    ctx.restore();
+
+  });
+
+}
+export function drawForegroundShapes(ctx, foregroundshapes){
+  if (!Array.isArray(foregroundshapes)) return; 
+
+  foregroundshapes.forEach(p => {
 
     const angle = p.angle || 0;
 
@@ -630,8 +688,8 @@ export function playerMoveOn(dwarf, door, arrowUpPressed){
   arrowUpPressed){
     dwarf.MoveOn = true;
     dwarf.nachricht3 = {n:"Level abgeschlossen!",x:dwarf.nachricht3.x,y:dwarf.nachricht3.y,c:dwarf.nachricht3.c};
-    dwarf.x = -100;
-    dwarf.y = -100;
+    dwarf.x = 1000;
+    dwarf.y = 0;
     dwarf.vy = 0;
     dwarf.disappear = true;
     dwarf.onGround = true;
@@ -729,7 +787,7 @@ export function drawCarriage(ctx, carriage, canvas) {
     return { leftWindowX, windowY, windowWidth, windowHeight };
 }
 
-export function drawKingOnCarriage(ctx, king, carriage, windows) {
+export function drawKingOnCarriage(ctx, king, dwarf, carriage, windows) {
     if (!king || !carriage || !windows) return;
 
     // König nur zeichnen, wenn Kutsche fährt
@@ -747,11 +805,11 @@ export function drawKingOnCarriage(ctx, king, carriage, windows) {
     const kingX = leftWindowX + (windowWidth - kingSize) / 2;
     const kingY = windowY + (windowHeight - kingSize) / 2 + offsetY;
 
-    drawKing(ctx, { ...king, x: kingX, y: kingY, w: kingSize, h: kingSize });
+    drawKing(ctx, { ...king, x: kingX, y: kingY, w: kingSize, h: kingSize },dwarf);
 
     ctx.restore();
 }
-export function drawKingNextToCarriage(ctx, king, carriage) {
+export function drawKingNextToCarriage(ctx, king, dwarf, carriage) {
     if (!king || !carriage) return;
 
     ctx.save();
@@ -761,7 +819,7 @@ export function drawKingNextToCarriage(ctx, king, carriage) {
     const kingY = carriage.y +10; // Boden ausrichten
 
     const kingBody = { ...king, x: kingX, y: kingY, w: 16, h: 16 };
-    drawKing(ctx, kingBody);
+    drawKing(ctx, kingBody,dwarf);
 
     ctx.restore();
 }

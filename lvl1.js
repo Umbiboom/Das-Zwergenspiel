@@ -13,7 +13,8 @@ import {
   drawDoor,
   drawDwarf,
   textZeigen,
-  playerMoveOn
+  playerMoveOn,
+  drawForegroundShapes
 } from "./functions.js";
 
 
@@ -88,8 +89,7 @@ export const platforms = [
   {x:650,y:250,w:170,h:50,c:"#8d0303", type:"hill",angle:0},
   {x:480,y:250,w:170,h:60,c:"#8d0303", type:"hill",angle:0}, 
   {x:550,y:250,w:170,h:70,c:"#6a2000", type:"hill",angle:0},
-  {x:0,y: canvas.height - 50,w:canvas.width,h:50,c:"#0b3400", type:"platform",angle:0},
-
+  {x:0,y: canvas.height - 50,w:canvas.width,h:50,c:"#0b3400", type:"platform",angle:0}
 ];
 
 
@@ -104,7 +104,7 @@ export const bubbles = [
 
 
 
-export const shapes = [ 
+export const backgroundshapes = [ 
 
 
   {x:50,y:125,w:50,h:275,c:"#5b3d00", type:"platform",angle:0},
@@ -146,6 +146,15 @@ export const shapes = [
 
 
 ];
+export const foregroundshapes = [
+  {x:540,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
+  {x:615,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
+  {x:715,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
+  {x:650,y:250,w:170,h:50,c:"#8d0303", type:"hill",angle:0},
+  {x:480,y:250,w:170,h:60,c:"#8d0303", type:"hill",angle:0}, 
+  {x:550,y:250,w:170,h:70,c:"#6a2000", type:"hill",angle:0},
+
+]
 export const covers = [
     // Tannenbaum 1
     { type: "triangle", x1: 75, y1: -50, x2: -35, y2: 150, x3: 185, y3: 150, color: "#033100" },
@@ -166,14 +175,14 @@ export const covers = [
 
 ];
 
-export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, keys, gravity, background, shapes, carriage,covers) {
+export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, keys, gravity, background,backgroundshapes, foregroundshapes, carriage,covers) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     update(canvas, dwarf, platforms, keys, gravity);
     
     checkDoor(dwarf, door,keys["ArrowUp"]);
-    drawBackgroundShapes(ctx, shapes);
+    drawBackgroundShapes(ctx, backgroundshapes);
     drawPlatforms(ctx, platforms);
     checkPlatformsCollision(dwarf, platforms, canvas);
 
@@ -188,15 +197,17 @@ export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, ke
     drawKingOnCarriage(ctx, king, carriage, carriageWindows);
     // Wenn die Kutsche fährt
     if (carriage.speed !== 0) {
-        drawKingOnCarriage(ctx, king, carriage, carriageWindows);
+        drawKingOnCarriage(ctx, king, dwarf, carriage, carriageWindows);
     } else {
-        drawKingNextToCarriage(ctx, king, carriage);
+        drawKingNextToCarriage(ctx, king, dwarf, carriage);
     }
 
     if(carriage.speed === 0 && dwarf.nachrichtBubble1){
       drawBubbles(ctx, bubbles);
       dwarf.m = true;
     }
+
+    drawForegroundShapes(ctx,foregroundshapes);
     drawDoor(ctx, door);
 
     drawDwarf(ctx, dwarf);
