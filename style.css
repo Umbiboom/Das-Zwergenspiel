@@ -162,3 +162,21 @@ h1 {
     min-height: 100px;
   }
 }
+#touchControls {
+  margin-top: -120px;
+
+  position: relative;
+  z-index: 5000;
+}
+
+#moveButtons {
+  position: relative;
+  z-index: 5001;
+}
+
+#leftBtn,
+#rightBtn,
+#jumpBtn {
+  position: relative;
+  z-index: 5002;
+}
