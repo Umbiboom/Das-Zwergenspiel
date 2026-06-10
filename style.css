@@ -208,4 +208,15 @@ h1 {
 
   padding: 100px;
 }
+@media screen and (orientation: portrait) {
+  #rotateSign {
+    display: flex;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  #rotateSign {
+    display: none;
+  }
+}
 
