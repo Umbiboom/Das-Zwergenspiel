@@ -183,37 +183,32 @@ h1 {
 #rotateSign {
   display: none;
 
-  position: absolute;
-
-  top: 520px;   /* etwas unter dem Canvas */
+  position: fixed;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
 
-  width: 800px;
-  height: 800px;
+  transform: translate(-50%, -50%);
+
+  width: min(80vw, 600px);
+  height: min(80vw, 600px);
 
   border-radius: 50%;
 
   background: radial-gradient(circle, #d8b07a 0%, #b07a3e 100%);
   border: 8px solid #5a3512;
 
-  box-sizing: border-box;
-
-  font-size: 48px;
-  font-weight: bold;
   color: white;
   text-shadow: 3px 3px 4px black;
+  font-size: 48px;
+  font-weight: bold;
 
+  display: none;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 100px;
 
-  z-index: 100;
-}
+  padding: 80px;
+  box-sizing: border-box;
 
-@media (orientation: portrait) {
-  #rotateSign {
-    display: flex;
-  }
+  z-index: 20000;
 }
