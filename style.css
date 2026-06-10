@@ -180,3 +180,45 @@ h1 {
   position: relative;
   z-index: 5002;
 }
+#rotateSign {
+  display: none;
+
+  width: 800px;
+  height: 800px;
+
+  margin: 80px auto 0 auto;
+
+  border-radius: 50%;
+
+  background: radial-gradient(circle, #d8b07a 0%, #b07a3e 100%);
+  border: 8px solid #5a3512;
+
+  box-sizing: border-box;
+
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 3px 3px 4px black;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  padding: 100px;
+}
+
+/* Nur im Hochformat anzeigen */
+@media (orientation: portrait) {
+  #rotateSign {
+    display: flex;
+  }
+}
+
+/* Im Querformat verstecken */
+@media (orientation: landscape) {
+  #rotateSign {
+    display: none;
+  }
+}
