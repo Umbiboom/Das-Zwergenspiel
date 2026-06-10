@@ -183,10 +183,14 @@ h1 {
 #rotateSign {
   display: none;
 
+  position: absolute;
+
+  top: 520px;   /* etwas unter dem Canvas */
+  left: 50%;
+  transform: translateX(-50%);
+
   width: 800px;
   height: 800px;
-
-  margin: 80px auto 0 auto;
 
   border-radius: 50%;
 
@@ -200,12 +204,16 @@ h1 {
   color: white;
   text-shadow: 3px 3px 4px black;
 
-  display: flex;
   justify-content: center;
   align-items: center;
-
   text-align: center;
-
   padding: 100px;
+
+  z-index: 100;
 }
 
+@media (orientation: portrait) {
+  #rotateSign {
+    display: flex;
+  }
+}
