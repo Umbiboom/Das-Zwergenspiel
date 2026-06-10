@@ -24,6 +24,33 @@ document.addEventListener("click", startGame);
 // Touch
 document.addEventListener("touchstart", startGame, { passive: false });
 
+
+const leftBtn = document.getElementById("leftBtn");
+const rightBtn = document.getElementById("rightBtn");
+const jumpBtn = document.getElementById("jumpBtn");
+
+function bindButton(button, key) {
+  button.addEventListener("pointerdown", () => {
+    keys[key] = true;
+  });
+
+  button.addEventListener("pointerup", () => {
+    keys[key] = false;
+  });
+
+  button.addEventListener("pointerleave", () => {
+    keys[key] = false;
+  });
+
+  button.addEventListener("pointercancel", () => {
+    keys[key] = false;
+  });
+}
+
+bindButton(leftBtn, "ArrowLeft");
+bindButton(rightBtn, "ArrowRight");
+bindButton(jumpBtn, "Space");
+
 const keys = {};
 const gravity = 3;
 

@@ -15,6 +15,7 @@ export function update(canvas, dwarf, platforms, keys, gravity){
   }
   dwarf.vx = 0;
 
+
   if(keys["ArrowLeft"] || keys["KeyA"]){
     dwarf.vx = -dwarf.speed;
     dwarf.vy += 1;
