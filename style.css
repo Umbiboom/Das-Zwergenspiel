@@ -209,16 +209,3 @@ h1 {
   padding: 100px;
 }
 
-/* Nur im Hochformat anzeigen */
-@media (orientation: portrait) {
-  #rotateSign {
-    display: flex;
-  }
-}
-
-/* Im Querformat verstecken */
-@media (orientation: landscape) {
-  #rotateSign {
-    display: none;
-  }
-}
