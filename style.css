@@ -2,9 +2,9 @@
   position: absolute;
   top: 60%;
   left: 50%;
-  transform: translate(-50%);
+  transform: translate(-50%, -50%);
 
-  z-index: 1000; /* höher als die grünen Felder */
+  z-index: 1000;
 
   background: rgb(255, 255, 255);
   color: black;
@@ -14,13 +14,12 @@
   font-size: 20px;
   font-weight: bold;
 
-  animation: pulsieren 1s ease-in-out infinite;;
+  animation: pulsieren 1s ease-in-out infinite;
 }
 
 .zone {
   z-index: 1;
 }
-
 
 @keyframes pulsieren {
   0% {
@@ -35,7 +34,21 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
-canvas {
+
+body {
+  background-image: url("Hintergrundbild.png");
+  background-position: -400px 0px;
+  background-size: 100%;
+  margin: 0;
+  text-align: center;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+canvas,
+#canvas {
   background-image: url("Coverbild.png");
   background-size: 100%;
   display: block;
@@ -43,55 +56,47 @@ canvas {
   border: 3px solid #444;
   touch-action: none;
 }
-body {
-  background-image: url("Hintergrundbild.png");
-  background-position: -400px 0px;
-  background-size: 100%;
-
-  margin: 0;               /* keine Standard-Ränder */
-  text-align: center;      /* alles horizontal zentrieren */
-}
 
 h1 {
-  color: rgb(83, 255, 86);            /* Textfarbe grün */
-  background-color: rgb(0, 128, 6); /* weißer Hintergrund */
-  padding: 20px 200px;      /* Abstand innerhalb der Box */
+  color: rgb(83, 255, 86);
+  background-color: rgb(0, 128, 6);
+  padding: 20px 200px;
   font-family: Arial, sans-serif;
-  font-size: 3em;          /* Titelgröße */
-  margin-top: 20px;        /* Abstand vom oberen Rand */
-  display: inline-block;   /* damit border nur um den Text ist */
-  
+  font-size: 3em;
+  margin-top: 20px;
+  display: inline-block;
 }
+
 #gameWrapper {
   position: relative;
   width: 800px;
   height: 400px;
-
-  display: inline-block; 
-}
-
-#canvas {
-  display: block;
+  display: inline-block;
+  overflow: visible;
 }
 
 #startScreen {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 800px;
-  height: 400px;
+  inset: 0;
   background: rgba(0, 0, 0, 0.244);
   z-index: 999;
-
 }
 
-/* Touch-Steuerung */
+/* TOUCH CONTROLS */
 #touchControls {
   margin-top: -120px;
+
   padding: 10px;
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  position: relative;
+  z-index: 5000;
+
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 #moveButtons {
@@ -102,19 +107,58 @@ h1 {
 #leftBtn,
 #rightBtn {
   background-color: rgba(255, 255, 255, 0.25);
+
   width: 100px;
   height: 100px;
+
   font-size: 28px;
-  border-radius: 50%;
   font-weight: bold;
+
+  border-radius: 50%;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  touch-action: manipulation;
+
+  position: relative;
+  z-index: 5001;
 }
 
 #jumpBtn {
   background-color: rgba(255, 255, 255, 0.25);
+
   width: 100px;
   height: 100px;
+
   font-size: 28px;
   font-weight: bold;
+
   border-radius: 50%;
+
   margin-left: 460px;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  touch-action: manipulation;
+
+  position: relative;
+  z-index: 5001;
+}
+
+/* iPhone / iPad */
+@supports (-webkit-touch-callout: none) {
+  #touchControls {
+    margin-top: -120px;
+    position: relative;
+    z-index: 9999;
+  }
+
+  #leftBtn,
+  #rightBtn,
+  #jumpBtn {
+    min-width: 100px;
+    min-height: 100px;
+  }
 }
