@@ -1,6 +1,7 @@
 import * as lvl1 from "./lvl1.js";
 import * as lvl2 from "./lvl2.js";
 import * as lvl3 from "./lvl3.js";
+import { bindButton } from "./functions.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -16,7 +17,7 @@ function startGame() {
 }
 
 // Tastatur
-startScreen.addEventListener("keydown", startGame);
+document.addEventListener("keydown", startGame);
 
 startScreen.addEventListener("click", startGame);
 
@@ -24,42 +25,19 @@ startScreen.addEventListener("touchstart", startGame, {
   passive: false
 });
 
-function bindButton(button, key) {
 
-  button.addEventListener("pointerdown", e => {
-    e.preventDefault();
-    keys[key] = true;
-  });
 
-  button.addEventListener("pointerup", e => {
-    e.preventDefault();
-    keys[key] = false;
-  });
-
-  button.addEventListener("touchstart", e => {
-    e.preventDefault();
-    keys[key] = true;
-  }, { passive: false });
-
-  button.addEventListener("touchend", e => {
-    e.preventDefault();
-    keys[key] = false;
-  }, { passive: false });
-
-  button.addEventListener("pointerleave", () => {
-    keys[key] = false;
-  });
-
-  button.addEventListener("pointercancel", () => {
-    keys[key] = false;
-  });
-}
-
-bindButton(leftBtn, "ArrowLeft");
-bindButton(rightBtn, "ArrowRight");
-bindButton(jumpBtn, "Space");
+const leftBtn = document.getElementById("leftBtn");
+const rightBtn = document.getElementById("rightBtn");
+const jumpBtn = document.getElementById("jumpBtn");
 
 const keys = {};
+
+bindButton(leftBtn, "ArrowLeft", keys);
+bindButton(rightBtn, "ArrowRight", keys);
+bindButton(jumpBtn, "Space", keys);
+
+
 const gravity = 3;
 
 const slowFactor = 2;

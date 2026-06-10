@@ -875,3 +875,35 @@ export function drawCovers(ctx, dwarf, covers) {
         }
     }
 }
+
+
+export function bindButton(button, key, keys) {
+
+  button.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    keys[key] = true;
+  });
+
+  button.addEventListener("pointerup", e => {
+    e.preventDefault();
+    keys[key] = false;
+  });
+
+  button.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys[key] = true;
+  }, { passive: false });
+
+  button.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys[key] = false;
+  }, { passive: false });
+
+  button.addEventListener("pointerleave", () => {
+    keys[key] = false;
+  });
+
+  button.addEventListener("pointercancel", () => {
+    keys[key] = false;
+  });
+}
