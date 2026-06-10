@@ -16,27 +16,35 @@ function startGame() {
 }
 
 // Tastatur
-document.addEventListener("keydown", startGame);
+startScreen.addEventListener("keydown", startGame);
 
-// Maus / Klick
-document.addEventListener("click", startGame);
+startScreen.addEventListener("click", startGame);
 
-// Touch
-document.addEventListener("touchstart", startGame, { passive: false });
-
-
-const leftBtn = document.getElementById("leftBtn");
-const rightBtn = document.getElementById("rightBtn");
-const jumpBtn = document.getElementById("jumpBtn");
+startScreen.addEventListener("touchstart", startGame, {
+  passive: false
+});
 
 function bindButton(button, key) {
-  button.addEventListener("pointerdown", () => {
+
+  button.addEventListener("pointerdown", e => {
+    e.preventDefault();
     keys[key] = true;
   });
 
-  button.addEventListener("pointerup", () => {
+  button.addEventListener("pointerup", e => {
+    e.preventDefault();
     keys[key] = false;
   });
+
+  button.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys[key] = true;
+  }, { passive: false });
+
+  button.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys[key] = false;
+  }, { passive: false });
 
   button.addEventListener("pointerleave", () => {
     keys[key] = false;
