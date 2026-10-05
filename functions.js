@@ -908,11 +908,7 @@ export function bindButton(button, key, keys) {
   });
 }
 
-export function startGame() {
-  if (started) return;
-  started = true;
-  startScreen.style.display = "none";
-}
+
 
 export function safeArray(v) {
   return Array.isArray(v) ? [...v] : [];
@@ -967,84 +963,5 @@ export function handleTouchEnd() {
   keys["ArrowRight"] = false;
   keys["Space"] = false;
 }
-// --- Levelwechsel ---
-export function loadNextLevel() {
-  const dwarf = currentLevel.dwarf;
 
-  if (dwarf.isLoadingNextLevel) return;
-  dwarf.isLoadingNextLevel = true;
 
-  if (currentLevelIndex < levels.length - 1) {
-    dwarf.nachricht = {
-      n: "Level abgeschlossen!\nLade nächstes Level...",
-      x: 30,
-      y: 40,
-      c: dwarf.nachricht?.c ?? "white"
-    };
-  } else {
-    dwarf.finalMessage = true;
-  }
-
-  setTimeout(() => {
-    currentLevelIndex++;
-
-    if (currentLevelIndex < levels.length) {
-      currentLevel = createLevel(levels[currentLevelIndex]);
-
-      // Reset wichtige States nach Levelwechsel
-      currentLevel.dwarf.nachricht = {
-        n: "",
-        x: 30,
-        y: 40,
-        c: "white"
-      };
-      currentLevel.dwarf.isLoadingNextLevel = false;
-
-    } else {
-      dwarf.isLoadingNextLevel = false;
-    }
-  }, 1000);
-}
-
-// --- Game Loop ---
-export function gameLoop() {
-  if (!started) {
-    requestAnimationFrame(gameLoop);
-    return;
-  }
-  frameCounter++;
-
-  if (frameCounter >= slowFactor) {
-
-    const lvl = levels[currentLevelIndex];
-
-    lvl.loop(
-      ctx,
-      canvas,
-      currentLevel.dwarf,
-      currentLevel.platforms,
-      currentLevel.bubbles,
-      currentLevel.door,
-      currentLevel.king ?? null,
-      currentLevel.key,
-      keys,
-      gravity,
-      currentLevel.background,
-      currentLevel.backgroundshapes,
-      currentLevel.foregroundshapes,
-      currentLevel.carriage,
-      currentLevel.covers
-    );
-
-    if (
-      currentLevel.dwarf.MoveOn &&
-      !currentLevel.dwarf.isLoadingNextLevel
-    ) {
-      loadNextLevel();
-    }
-
-    frameCounter = 0;
-  }
-
-  requestAnimationFrame(gameLoop);
-}
