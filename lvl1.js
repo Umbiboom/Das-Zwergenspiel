@@ -228,5 +228,6 @@ export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, ke
     if (dwarf.nachrichtBubble2 && dwarf.m) {textZeigen(ctx, dwarf.nachrichtBubble2.n, dwarf.nachrichtBubble2.x, dwarf.nachrichtBubble2.y, "black")};
     if (dwarf.nachricht3) {textZeigen(ctx, dwarf.nachricht3.n, dwarf.nachricht3.x, dwarf.nachricht3.y, dwarf.nachricht3.c)};
     if (dwarf.nachricht4) {textZeigen(ctx, dwarf.nachricht4.n, dwarf.nachricht4.x, dwarf.nachricht4.y, dwarf.nachricht4.c)};
+    
     playerMoveOn(dwarf, door, keys["ArrowUp"]);
 };

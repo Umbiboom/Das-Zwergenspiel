@@ -24,13 +24,15 @@ startScreen.addEventListener("touchstart", startGame, {
 const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");
 const jumpBtn = document.getElementById("jumpBtn");
+const keyBtn = document.getElementById("keyBtn"); 
+
 
 const keys = {};
 
 bindButton(leftBtn, "ArrowLeft", keys);
 bindButton(rightBtn, "ArrowRight", keys);
 bindButton(jumpBtn, "Space", keys);
-
+bindButton(keyBtn, "ArrowUp", keys);
 
 const gravity = 3;
 

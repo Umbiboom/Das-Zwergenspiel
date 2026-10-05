@@ -35,6 +35,7 @@ export function update(canvas, dwarf, platforms, keys, gravity){
     dwarf.vy = -dwarf.jump*2;
     dwarf.onGround = false;
   }
+  
 
   if(dwarf.vy > 0){
     dwarf.vy += gravity;
