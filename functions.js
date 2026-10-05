@@ -35,7 +35,7 @@ export function update(canvas, dwarf, platforms, keys, gravity){
     dwarf.vy = -dwarf.jump*2;
     dwarf.onGround = false;
   }
-  
+
 
   if(dwarf.vy > 0){
     dwarf.vy += gravity;
@@ -825,6 +825,149 @@ export function drawKingNextToCarriage(ctx, king, dwarf, carriage) {
     ctx.restore();
 }
 
+// ================= LEVEL 2: MONSTER =================
+
+export function updateMonster(monster, dwarf, canvas, opts) {
+  if (!monster || dwarf.disappear) return;
+
+  const { speed, activationRange } = opts;
+
+  monster.frame += 1;
+
+  const dx = dwarf.x - monster.x;
+
+  // Monster wartet, bis der Zwerg nahe genug ist
+  if (!monster.active) {
+    if (Math.abs(dx) < activationRange) monster.active = true;
+    else return;
+  }
+
+  // Immer in Richtung des Zwergs
+  monster.direction = dx < 0 ? -1 : 1;
+
+  // Bewegung, aber auf die Brücke begrenzt
+  const bridge = monster.bridge;
+  const step = speed * monster.direction;
+  let nextX = monster.x + step;
+
+  if (bridge) {
+    const minX = bridge.x + 4;
+    const maxX = bridge.x + bridge.w - monster.w - 4;
+    nextX = Math.max(minX, Math.min(maxX, nextX));
+  }
+  monster.x = nextX;
+
+  // Schwerkraft + auf der Brücke stehen bleiben
+  monster.vy += 0.8;
+  monster.y += monster.vy;
+
+  if (bridge && monster.x + monster.w > bridge.x && monster.x < bridge.x + bridge.w) {
+    const top = bridge.y;
+    if (monster.y + monster.h >= top && monster.y + monster.h <= top + 60 && monster.vy >= 0) {
+      monster.y = top - monster.h;
+      monster.vy = 0;
+    }
+  }
+
+  // Sicherheitsnetz: nicht durch den Boden fallen
+  if (monster.y + monster.h > canvas.height) {
+    monster.y = canvas.height - monster.h;
+    monster.vy = 0;
+  }
+}
+
+export function drawMonster(ctx, monster) {
+  if (!monster) return;
+
+  const { x, y, w, h, direction, frame } = monster;
+
+  ctx.save();
+  ctx.translate(direction === -1 ? x + w : x, y);
+  if (direction === -1) ctx.scale(-1, 1);
+
+  // Beine (wippen beim Laufen)
+  const legPhase = monster.active ? Math.sin(frame * 0.3) * 0.4 : 0;
+
+  ctx.fillStyle = "#1e4a12";
+  ctx.save();
+  ctx.translate(w * 0.22, h * 0.72);
+  ctx.rotate(legPhase);
+  ctx.fillRect(0, 0, w * 0.2, h * 0.32);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(w * 0.58, h * 0.72);
+  ctx.rotate(-legPhase);
+  ctx.fillRect(0, 0, w * 0.2, h * 0.32);
+  ctx.restore();
+
+  // Körper
+  ctx.fillStyle = "#2d6e1a";
+  ctx.beginPath();
+  ctx.ellipse(w * 0.5, h * 0.58, w * 0.42, h * 0.34, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Kopf
+  ctx.fillStyle = "#3a8a22";
+  ctx.fillRect(w * 0.52, h * 0.14, w * 0.38, h * 0.36);
+
+  // Horn
+  ctx.fillStyle = "#c9b28a";
+  ctx.beginPath();
+  ctx.moveTo(w * 0.58, h * 0.16);
+  ctx.lineTo(w * 0.56, h * -0.02);
+  ctx.lineTo(w * 0.68, h * 0.12);
+  ctx.closePath();
+  ctx.fill();
+
+  // Auge
+  ctx.fillStyle = "#ff2200";
+  ctx.fillRect(w * 0.78, h * 0.24, w * 0.1, h * 0.08);
+
+  // Zähne
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(w * 0.82, h * 0.36, w * 0.05, h * 0.1);
+  ctx.fillRect(w * 0.9,  h * 0.36, w * 0.05, h * 0.1);
+
+  // Arm / Klaue
+  ctx.fillStyle = "#245a14";
+  ctx.fillRect(w * 0.08, h * 0.48, w * 0.22, h * 0.12);
+
+  ctx.restore();
+
+  // Optionale Trefferzone zum Debuggen
+  if (monster.debugHitbox) {
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, w, h);
+  }
+}
+
+export function checkMonsterCollision(dwarf, monster) {
+  if (!monster) return false;
+  if (!monster.active) return false;
+  if (dwarf.disappear || dwarf.dead) return false;
+
+  const pad = 4; // etwas verzeihend an den Seiten
+
+  return (
+    dwarf.x + dwarf.w - pad > monster.x &&
+    dwarf.x + pad < monster.x + monster.w &&
+    dwarf.y + dwarf.h - pad > monster.y &&
+    dwarf.y + pad < monster.y + monster.h
+  );
+}
+
+export function restartLevel(dwarf) {
+  dwarf.dead = false;
+  dwarf.disappear = false;
+  dwarf.MoveOn = false;
+  dwarf.vx = 0;
+  dwarf.vy = 0;
+  dwarf.x = 50;
+  dwarf.y = 200;
+  dwarf.onGround = false;
+}
 
 // Hilfsfunktion: Prüft, ob ein Punkt innerhalb eines Dreiecks liegt
 function pointInTriangle(px, py, x1, y1, x2, y2, x3, y3) {
@@ -915,6 +1058,7 @@ export function safeArray(v) {
   return Array.isArray(v) ? [...v] : [];
 }
 
+
 export function createLevel(lvl) {
   return {
     dwarf: { ...lvl.dwarf },
@@ -927,8 +1071,8 @@ export function createLevel(lvl) {
     king: lvl.king ? { ...lvl.king } : null,
     key: lvl.key ? { ...lvl.key } : { x: 500, y: 250 },
     carriage: { ...lvl.carriage },
+    monster: lvl.monster ? { ...lvl.monster } : null,   
     background: lvl.background,
- 
   };
 }
 

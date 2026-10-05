@@ -5,229 +5,429 @@ import {
   drawPlatforms,
   checkPlatformsCollision,
   drawKey,
-  drawCovers,
-  drawCarriage,
-  drawKingOnCarriage,
-  drawKingNextToCarriage,
-  drawBubbles,
-  drawDoor,
   drawDwarf,
+  drawDoor,
   textZeigen,
   playerMoveOn,
-  drawForegroundShapes
+  drawForegroundShapes,
+  drawMonster,
+  updateMonster,
+  checkMonsterCollision,
+  drawCovers,
+  restartLevel
 } from "./functions.js";
 
 
-// --- Kutsche erstellen für Level 1 ---
-export const carriage = {
-  x: 800,          // Start rechts außerhalb des Canvas
-  y: 225,          // Vertikale Position passend zum Boden/Hügel
-  width: 200,
-  height: 100,
-  wheelAngle: 0,
-  speed: 4  
+// =====================================================
+// LEVEL 2
+// =====================================================
+
+// ---------------- MONSTER ----------------
+
+export const MONSTER_SPEED = 2.4;
+export const MONSTER_ACTIVATION_RANGE = 260;
+
+const MONSTER_OPTIONS = {
+  speed: MONSTER_SPEED,
+  activationRange: MONSTER_ACTIVATION_RANGE
 };
-export const king = {x:300,y:200};
 
 
-export const background = "#0080ff";
+// ---------------- HINTERGRUND ----------------
 
-export const door = {x:645, y:150, w:30, h:50, c:"#6e4600", o:"#ea9a4a"};
+export const background = "#82c7ed";
 
 
+// ---------------- TÜR ----------------
+// Tür oben auf dem rechten Felsen
 
-export const key = {x:70, y: 85};
-// --- Level 1 Daten ---
+export const door = {
+  x: 870,
+  y: 170,
+  w: 30,
+  h: 50,
+  c: "#70451f",
+  o: "#e0a05a"
+};
+
+
+// ---------------- SCHLÜSSEL ----------------
+// Schlüssel genau in der Mitte der Brücke
+
+export const key = {
+  x: 500,
+  y: 285
+};
+
+
+// ---------------- ZWERG ----------------
+// Start links auf dem Felsen
+
 export const dwarf = {
-  x: 120,
-  y: 200,
+  x: 70,
+  y: 170,
+
   w: 16,
   h: 50,
+
   vx: 0,
   vy: 0,
+
   speed: 7,
   jump: 13,
+
   direction: 1,
+
   onGround: false,
   frame: 0,
+
   schluessel: 0,
+
   MoveOn: false,
   disappear: false,
-  nachricht: {n:"",x:30,y:40,c:"white"},
-  nachrichtBubble1: {n:"'Oh du tapferer Zwerg,\n rette das Königreich\n vor den bösen Mächten'",x:king.x -110,y:king.y -100},
-  nachrichtBubble2: {n:"",x:king.x -110,y:king.y -100},
-  bubble2: "So mögen die Schlüssel\n dich leiten",
+  dead: false,
 
-  nachricht3: {n:"",x:300,y:380,c:"white"},
-  nachricht4: {n:"",x:300,y:380,c:"white"},
+  restartAt: 0,
+
+  nachricht: {
+    n: "",
+    x: 30,
+    y: 40,
+    c: "white"
+  },
+
+  nachricht3: {
+    n: "",
+    x: 300,
+    y: 380,
+    c: "white"
+  },
+
+  nachricht4: {
+    n: "",
+    x: 300,
+    y: 380,
+    c: "white"
+  },
+
   isLoadingNextLevel: false,
-  finalMessage: false,
-  useOtherShape: true,
-  m: false
+  finalMessage: false
 };
 
 
-export const platforms = [ 
+// =====================================================
+// BRÜCKE
+// =====================================================
 
-  {x:50,y:150,w:125,h:25,c:"#5b3d00", type:"platform",angle: -Math.PI/4},
-  {x:100,y:100,w:25,h:125,c:"#5b3d00", type:"platform",angle: Math.PI/4},
-  {x:50,y:125,w:50,h:50,c:"#5b3d00", type:"block",angle:0},
-  {x:250,y:150,w:125,h:25,c:"#5b3d00", type:"platform",angle: -Math.PI/4},
-  {x:300,y:100,w:25,h:125,c:"#5b3d00", type:"platform",angle: Math.PI/4},
-  {x:250,y:75,w:50,h:100,c:"#5b3d00", type:"block",angle:0},
-  {x:450,y:150,w:125,h:25,c:"#5b3d00", type:"platform",angle: -Math.PI/4},
-  {x:500,y:100,w:25,h:125,c:"#5b3d00", type:"platform",angle: Math.PI/4},
-  {x:450,y:75,w:50,h:100,c:"#5b3d00", type:"block",angle:0},
+// Die Brücke liegt tiefer als die beiden Felsen.
 
-
-  {x:600,y:-200,w:120,h:500,c:"#997300", type:"platform",angle:0},
-  {x:600,y:-200,w:10,h:400,c:"#5b3d00", type:"platform",angle:0},
-  {x:710,y:-200,w:10,h:400,c:"#5b3d00", type:"platform",angle:0},
-  {x:600,y:200,w:120,h:100,c:"#5b3d00", type:"platform",angle:0},
+export const bridge = {
+  x: 300,
+  y: 300,
+  w: 400,
+  h: 25
+};
 
 
-  {x:650,y:250,w:170,h:50,c:"#8d0303", type:"hill",angle:0},
-  {x:480,y:250,w:170,h:60,c:"#8d0303", type:"hill",angle:0}, 
-  {x:550,y:250,w:170,h:70,c:"#6a2000", type:"hill",angle:0},
-  {x:0,y: canvas.height - 50,w:canvas.width,h:50,c:"#0b3400", type:"platform",angle:0}
+// =====================================================
+// MONSTER
+// =====================================================
+
+export const monster = {
+  x: 560,
+  y: 240,
+
+  w: 42,
+  h: 60,
+
+  vx: 0,
+  vy: 0,
+
+  direction: -1,
+  frame: 0,
+
+  active: false,
+
+  debugHitbox: false,
+
+  // Das Monster bleibt auf der Brücke.
+  bridge: bridge
+};
+
+
+// =====================================================
+// PLATTFORMEN
+// =====================================================
+
+// Linker Felsen
+// Rechter Felsen
+// Brücke dazwischen
+
+export const platforms = [
+
+  { x: 0, y: 220, w: 300, h: 180, c: "#59636d"},
+  { x: bridge.x, y: bridge.y, w: bridge.w, h: bridge.h, c: "#70472c"},
+  { x: 700, y: 220, w: 300, h: 180, c: "#59636d"},
+  { x: 820, y: 210, w: 180, h: 20, c: "#68737d"}
 ];
 
 
 
+export const backgroundshapes = [
 
-
-export const bubbles = [ 
-  {x:king.x - 150,y:king.y -130 ,w:300,h:100,c:"#ffffff"},
-  {x:king.x - 15,y:king.y - 25,w:40,h:25,c:"#ffffff"}
-   ];
-
-
-
-
-export const backgroundshapes = [ 
-
-
-  {x:50,y:125,w:50,h:275,c:"#5b3d00", type:"platform",angle:0},
-
-  {x:250,y:75,w:50,h:275,c:"#5b3d00", type:"platform",angle:0},
-
-  {x:450,y:75,w:50,h:275,c:"#5b3d00", type:"platform",angle:0},
-  {x:600,y:200,w:120,h:150,c:"#5b3d00", type:"platform",angle:0},
-
-
-  {x:225,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:275,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:325,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:375,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:425,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:475,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:175,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:125,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:75,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:25,y:290,w:20,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:540,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:615,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:715,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-
-
-
-  {x:450,y:275,w:70,h:50,c:"#b79d6d", type:"hill",angle:0},
-  {x:400,y:275,w:70,h:60,c:"#ab8244", type:"hill",angle:0}, 
-  {x:300,y:275,w:70,h:55,c:"#b8995f", type:"hill",angle:0},
-  {x:350,y:275,w:70,h:50,c:"#b69d6e", type:"hill",angle:0},
-  {x:150,y:275,w:70,h:50,c:"#c6a872", type:"hill",angle:0},
-  {x:100,y:275,w:70,h:60,c:"#aa8041", type:"hill",angle:0}, 
-  {x:50,y:275,w:70,h:55,c:"#b09156", type:"hill",angle:0},
-  {x:0,y:275,w:70,h:50,c:"#ad9569", type:"hill",angle:0},
-  {x:250,y:275,w:70,h:60,c:"#ad8242", type:"hill",angle:0}, 
-  {x:200,y:275,w:70,h:55,c:"#b89960", type:"hill",angle:0},
-
-
-
-
+  {x: -50, y: 130, w: 400, h: 300, c: "#7192a0", type: "hill"},
+  {x: 300, y: 120, w: 400, h: 310, c: "#62879f", type: "hill"},
+  {x: 650, y: 130, w: 400, h: 300, c: "#7192a0", type: "hill"}
 ];
+
+
+
 export const foregroundshapes = [
-  {x:540,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:615,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:715,y:290,w:40,h:60,c:"#ffffff", type:"platform",angle:0},
-  {x:650,y:250,w:170,h:50,c:"#8d0303", type:"hill",angle:0},
-  {x:480,y:250,w:170,h:60,c:"#8d0303", type:"hill",angle:0}, 
-  {x:550,y:250,w:170,h:70,c:"#6a2000", type:"hill",angle:0},
 
-]
-export const covers = [
-    // Tannenbaum 1
-    { type: "triangle", x1: 75, y1: -50, x2: -35, y2: 150, x3: 185, y3: 150, color: "#033100" },
-    { type: "triangle", x1: 75, y1: 0, x2: -35, y2: 200, x3: 185, y3: 200, color: "#033100" },
-    { type: "triangle", x1: 75, y1: 50, x2: -35, y2: 250, x3: 185, y3: 250, color: "#033100" },
-
-
-    // Tannenbaum 2
-    { type: "triangle", x1: 275, y1: -50, x2: 165, y2: 150, x3: 385, y3: 150, color: "#033100" },
-    { type: "triangle", x1: 275, y1: 0, x2: 165, y2: 200, x3: 385, y3: 200, color: "#033100" },
-    { type: "triangle", x1: 275, y1: 50, x2: 165, y2: 250, x3: 385, y3: 250, color: "#033100" },
-
-
-    // Tannenbaum 3
-    { type: "triangle", x1: 475, y1: -50, x2: 365, y2: 150, x3: 585, y3: 150, color: "#033100" },
-    { type: "triangle", x1: 475, y1: 0, x2: 365, y2: 200, x3: 585, y3: 200, color: "#033100" },
-    { type: "triangle", x1: 475, y1: 50, x2: 365, y2: 250, x3: 585, y3: 250, color: "#033100" },
-
+  {x: 300, y: 365,w: 400,h: 45,c: "#1986ad"},
+  {x: 300, y: 380,w: 400,h: 25,c: "#14789c"}
 ];
 
-export function loop(ctx, canvas, dwarf, platforms, bubbles, door, king, key, keys, gravity, background,backgroundshapes, foregroundshapes, carriage,covers) {
-    ctx.fillStyle = background;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    update(canvas, dwarf, platforms, keys, gravity);
-    
-    checkDoor(dwarf, door,keys["ArrowUp"]);
-    drawBackgroundShapes(ctx, backgroundshapes);
-    drawPlatforms(ctx, platforms);
-    checkPlatformsCollision(dwarf, platforms, canvas);
 
-    drawKey(ctx, dwarf, key);
-    drawCovers(ctx, dwarf,covers);
 
-    // --- Kutsche zeichnen und Fensterkoordinaten speichern ---
-    const carriageWindows = drawCarriage(ctx, carriage, canvas);
+export function loop(
+  ctx,
+  canvas,
+  dwarf,
+  platforms,
+  bubbles,
+  door,
+  king,
+  key,
+  keys,
+  gravity,
+  background,
+  backgroundshapes,
+  foregroundshapes,
+  carriage,
+  covers
+) {
 
-    
-    // König nur im Fenster anzeigen
-    drawKingOnCarriage(ctx, king, carriage, carriageWindows);
-    // Wenn die Kutsche fährt
-    if (carriage.speed !== 0) {
-        drawKingOnCarriage(ctx, king, dwarf, carriage, carriageWindows);
-    } else {
-        drawKingNextToCarriage(ctx, king, dwarf, carriage);
+  // ---------------- HINTERGRUND ----------------
+
+  ctx.fillStyle = background;
+
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  // Berge
+  drawBackgroundShapes(
+    ctx,
+    backgroundshapes
+  );
+
+
+  // ---------------- PLATTFORMEN ----------------
+
+  drawPlatforms(
+    ctx,
+    platforms
+  );
+
+
+  // ---------------- WASSER ----------------
+
+  // Wasser wird mit deiner vorhandenen
+  // drawForegroundShapes()-Funktion gezeichnet.
+  drawForegroundShapes(
+    ctx,
+    foregroundshapes
+  );
+
+
+  // ---------------- TOD ----------------
+
+  if (dwarf.dead) {
+
+    drawDwarf(
+      ctx,
+      dwarf
+    );
+
+    textZeigen(
+      ctx,
+      "Erwischt!",
+      300,
+      120,
+      "red"
+    );
+
+    if (!dwarf.restartAt) {
+      dwarf.restartAt = performance.now();
     }
 
-    if(carriage.speed === 0 && dwarf.nachrichtBubble1){
-      drawBubbles(ctx, bubbles);
-      dwarf.m = true;
+    if (
+      performance.now() -
+      dwarf.restartAt >
+      1100
+    ) {
+
+      dwarf.restartAt = 0;
+
+      restartLevel(
+        dwarf
+      );
     }
 
-    drawForegroundShapes(ctx,foregroundshapes);
-    drawDoor(ctx, door);
-
-    drawDwarf(ctx, dwarf);
-  
-
-    // Textanzeigen
-    if (dwarf.nachricht) {textZeigen(ctx, dwarf.nachricht.n, dwarf.nachricht.x, dwarf.nachricht.y, dwarf.nachricht.c)};
-    if (dwarf.finalMessage) {textZeigen(ctx, "Du hast alle\nLevels geschafft!", dwarf.nachricht.x, dwarf.nachricht.y, dwarf.nachricht.c)};
-    if (dwarf.nachrichtBubble1 && dwarf.m) {
-    textZeigen(ctx, dwarf.nachrichtBubble1.n, dwarf.nachrichtBubble1.x, dwarf.nachrichtBubble1.y, "black");
-
-    // Nachricht nach 3 Sekunden verschwinden lassen
-      setTimeout(() => {
-          dwarf.nachrichtBubble1 = null;
-          dwarf.m = false;
-      }, 3000);
+    return;
   }
-    if (dwarf.nachrichtBubble2 && dwarf.m) {textZeigen(ctx, dwarf.nachrichtBubble2.n, dwarf.nachrichtBubble2.x, dwarf.nachrichtBubble2.y, "black")};
-    if (dwarf.nachricht3) {textZeigen(ctx, dwarf.nachricht3.n, dwarf.nachricht3.x, dwarf.nachricht3.y, dwarf.nachricht3.c)};
-    if (dwarf.nachricht4) {textZeigen(ctx, dwarf.nachricht4.n, dwarf.nachricht4.x, dwarf.nachricht4.y, dwarf.nachricht4.c)};
-    
-    playerMoveOn(dwarf, door, keys["ArrowUp"]);
-};
+
+
+  // ---------------- ZWERG BEWEGEN ----------------
+
+  update(
+    canvas,
+    dwarf,
+    platforms,
+    keys,
+    gravity
+  );
+
+
+  const arrowUpPressed =
+    !!keys["ArrowUp"];
+
+
+  // ---------------- TÜR ----------------
+
+  checkDoor(
+    dwarf,
+    door,
+    arrowUpPressed
+  );
+
+
+  // ---------------- PLATTFORM-KOLLISION ----------------
+
+  checkPlatformsCollision(
+    dwarf,
+    platforms,
+    canvas
+  );
+
+
+  // ---------------- SCHLÜSSEL ----------------
+
+  drawKey(
+    ctx,
+    dwarf,
+    key
+  );
+
+
+  // ---------------- COVERS ----------------
+
+  if (Array.isArray(covers)) {
+
+    drawCovers(
+      ctx,
+      dwarf,
+      covers
+    );
+  }
+
+
+  // ---------------- MONSTER ----------------
+
+  // Verhalten bleibt unverändert.
+  // Es bewegt sich weiterhin nur auf der Brücke.
+
+  updateMonster(
+    monster,
+    dwarf,
+    canvas,
+    MONSTER_OPTIONS
+  );
+
+  drawMonster(
+    ctx,
+    monster
+  );
+
+
+  // Monster trifft Zwerg
+  if (
+    checkMonsterCollision(
+      dwarf,
+      monster
+    )
+  ) {
+
+    dwarf.dead = true;
+
+    dwarf.vx = 0;
+    dwarf.vy = 0;
+  }
+
+
+  // ---------------- TÜR ZEICHNEN ----------------
+
+  drawDoor(
+    ctx,
+    door
+  );
+
+
+  // ---------------- ZWERG ZEICHNEN ----------------
+
+  drawDwarf(
+    ctx,
+    dwarf
+  );
+
+
+  // ---------------- TEXTE ----------------
+
+  if (dwarf.nachricht) {
+
+    textZeigen(
+      ctx,
+      dwarf.nachricht.n,
+      dwarf.nachricht.x,
+      dwarf.nachricht.y,
+      dwarf.nachricht.c
+    );
+  }
+
+  if (dwarf.nachricht3) {
+
+    textZeigen(
+      ctx,
+      dwarf.nachricht3.n,
+      dwarf.nachricht3.x,
+      dwarf.nachricht3.y,
+      dwarf.nachricht3.c
+    );
+  }
+
+  if (dwarf.nachricht4) {
+
+    textZeigen(
+      ctx,
+      dwarf.nachricht4.n,
+      dwarf.nachricht4.x,
+      dwarf.nachricht4.y,
+      dwarf.nachricht4.c
+    );
+  }
+
+
+  // ---------------- LEVEL ABSCHLIESSEN ----------------
+
+  playerMoveOn(
+    dwarf,
+    door,
+    arrowUpPressed
+  );
+}
