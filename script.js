@@ -4,6 +4,7 @@ import * as lvl3 from "./lvl3.js";
 import { bindButton, safeArray, createLevel, handleTouch, handleTouchEnd } from "./functions.js";
 
 const canvas = document.getElementById("canvas");
+
 const ctx = canvas.getContext("2d");
 
 
@@ -20,6 +21,10 @@ startScreen.addEventListener("touchstart", startGame, {
   passive: false
 });
 
+document.addEventListener("keydown", e => {
+  if (!["ArrowUp", "ArrowLeft", "ArrowRight", "KeyA", "KeyD", "Space"].includes(e.code)) return;
+  document.body.classList.add("using-keyboard");
+});
 
 const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");

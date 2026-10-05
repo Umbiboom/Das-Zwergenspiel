@@ -1,3 +1,7 @@
+body.using-keyboard #touchControls {
+  display: none;
+}
+
 #startButton {
   position: absolute;
   top: 60%;
@@ -148,6 +152,7 @@ h1 {
 }
 
 #keyBtn {
+ 
   background-color: rgba(255, 255, 255, 0.25);
 
   width: 100px;
