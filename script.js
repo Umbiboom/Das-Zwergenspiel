@@ -84,7 +84,7 @@ const levels = [
   lvl3
 ];
 
-let currentLevelIndex = 0;
+let currentLevelIndex = 2;
 
 
 // ---------------------------------------------------
@@ -225,8 +225,7 @@ export function gameLoop() {
 
   if (frameCounter >= slowFactor) {
 
-    const lvl =
-      levels[currentLevelIndex];
+    const lvl = levels[currentLevelIndex];
 
 
     lvl.loop(

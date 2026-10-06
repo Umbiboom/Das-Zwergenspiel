@@ -273,13 +273,18 @@ export function drawKey(ctx, dwarf, key){
 
   }
 
-  if (!dwarf.isLoadingNextLevel && !dwarf.finalMessage){
+  if (!dwarf.finalMessage){
+
       dwarf.nachricht = {
-      n: "Schlüssel: " + dwarf.schluessel,
-      x: dwarf.nachricht.x,
-      y: dwarf.nachricht.y,
-      c: dwarf.nachricht.c
-    };
+          n: "Schlüssel: " + dwarf.schluessel,
+          x: dwarf.nachricht.x,
+          y: dwarf.nachricht.y,
+          c: dwarf.nachricht.c
+      };
+
+  } else {
+
+      dwarf.nachricht.n = "";
   }
 
 }
@@ -487,20 +492,49 @@ export function checkPlatformsCollision(dwarf, platforms, canvas){
         const dwarfFootX = dwarf.x + dwarf.w; 
         const dwarfFootY = dwarf.y + dwarf.h;
         const previousFootY = dwarfFootY - dwarf.vy;
+        const dwarfLeftX = dwarf.x;
+        const dwarfRightX = dwarf.x + dwarf.w;
+        
 
-        // --- Obere Plattformkante (wie bei Plattform) ---
-        if (dwarfFootX >= Math.min(leftTop.x, rightTop.x) && dwarfFootX <= Math.max(leftTop.x, rightTop.x)) {
-            const platformY = leftTop.y + (dwarfFootX - leftTop.x) * (rightTop.y - leftTop.y) / (rightTop.x - leftTop.x);
+        // --- Obere Plattformkante ---
+        const platformLeftX = Math.min(leftTop.x, rightTop.x);
+        const platformRightX = Math.max(leftTop.x, rightTop.x);
+
+        // Prüfen, ob der Zwerg horizontal über der Plattform ist
+        if (
+            dwarf.x + dwarf.w > platformLeftX &&
+            dwarf.x < platformRightX
+        ) {
+
+            // Punkt auf der Plattform unter dem Zwerg
+            const footX = Math.max(
+                platformLeftX,
+                Math.min(dwarfFootX, platformRightX)
+            );
+
+            const platformY =
+                leftTop.y +
+                (footX - leftTop.x) *
+                (rightTop.y - leftTop.y) /
+                (rightTop.x - leftTop.x);
 
             // Landung von oben
-            if (dwarf.vy >= 0 && previousFootY <= platformY && dwarfFootY >= platformY) {
+            if (
+                dwarf.vy >= 0 &&
+                previousFootY <= platformY &&
+                dwarfFootY >= platformY
+            ) {
                 dwarf.y = platformY - dwarf.h;
                 dwarf.vy = 0;
                 dwarf.onGround = true;
             }
 
             // Hochlaufen: auf Block halten
-            if (dwarf.vy < 0 && dwarfFootY >= platformY && previousFootY <= platformY + 5) {
+            if (
+                dwarf.vy < 0 &&
+                dwarfFootY >= platformY &&
+                previousFootY <= platformY + 5
+            ) {
                 dwarf.y = platformY - dwarf.h;
                 dwarf.vy = 0;
                 dwarf.onGround = true;
@@ -517,21 +551,34 @@ export function checkPlatformsCollision(dwarf, platforms, canvas){
 
     // --- Seitliche Kollisionen ---
     const dwarfTopY = dwarf.y;
-    const dwarfLeftX = dwarf.x;
-    const dwarfRightX = dwarf.x + dwarf.w;
+    
+    // Position des Zwergs vor diesem Frame
+    const previousDwarfLeftX = dwarfLeftX - dwarf.vx;
+    const previousDwarfRightX = dwarfRightX - dwarf.vx;
 
     // linke Seite des Blocks
-    if (dwarfRightX >= leftTop.x && dwarfLeftX < leftTop.x && dwarfTopY + dwarf.h > leftTop.y && dwarfTopY < leftBottom.y) {
+    if (
+        dwarf.vx > 0 &&
+        previousDwarfRightX <= leftTop.x &&
+        dwarfRightX >= leftTop.x &&
+        dwarfTopY + dwarf.h > leftTop.y &&
+        dwarfTopY < leftBottom.y
+    ) {
         dwarf.x = leftTop.x - dwarf.w;
         dwarf.vx = 0;
     }
 
     // rechte Seite des Blocks
-    if (dwarfLeftX <= rightTop.x && dwarfRightX > rightTop.x && dwarfTopY + dwarf.h > rightTop.y && dwarfTopY < rightBottom.y) {
+    if (
+        dwarf.vx < 0 &&
+        previousDwarfLeftX >= rightTop.x &&
+        dwarfLeftX <= rightTop.x &&
+        dwarfTopY + dwarf.h > rightTop.y &&
+        dwarfTopY < rightBottom.y
+    ) {
         dwarf.x = rightTop.x;
         dwarf.vx = 0;
     }
-
     return;
 }
 
@@ -689,6 +736,7 @@ export function playerMoveOn(dwarf, door, arrowUpPressed){
   arrowUpPressed){
     dwarf.MoveOn = true;
     dwarf.nachricht3 = {n:"Level abgeschlossen!",x:dwarf.nachricht3.x,y:dwarf.nachricht3.y,c:dwarf.nachricht3.c};
+    dwarf.finalMessage = true;
     dwarf.x = 1000;
     dwarf.y = 0;
     dwarf.vy = 0;
@@ -698,11 +746,24 @@ export function playerMoveOn(dwarf, door, arrowUpPressed){
     door.doorOpen = false;
     // Taste nicht mehr gedrückt
  
-    dwarf.nachrichtBubble1 = {n:"",x:170,y:90};
-    dwarf.nachrichtBubble2 = {n:dwarf.bubble2,x: dwarf.nachrichtBubble2.x,y:dwarf.nachrichtBubble2.y};
+        if (dwarf.nachrichtBubble1 != null) {
+      dwarf.nachrichtBubble1 = {
+        n: "",
+        x: 170,
+        y: 90
+      };
+    }
+
+    if (dwarf.nachrichtBubble2 != null) {
+      dwarf.nachrichtBubble2 = {
+        n: dwarf.bubble2,
+        x: dwarf.nachrichtBubble2.x,
+        y: dwarf.nachrichtBubble2.y
+      };
+    }
 
   }
-
+  
 
 
 }
@@ -964,8 +1025,8 @@ export function restartLevel(dwarf) {
   dwarf.MoveOn = false;
   dwarf.vx = 0;
   dwarf.vy = 0;
-  dwarf.x = 50;
-  dwarf.y = 200;
+  dwarf.x = dwarf.startpointX;
+  dwarf.y = dwarf.startpointY;
   dwarf.onGround = false;
 }
 
