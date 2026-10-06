@@ -84,7 +84,7 @@ const levels = [
   lvl3
 ];
 
-let currentLevelIndex = 2;
+let currentLevelIndex = 0;
 
 
 // ---------------------------------------------------
