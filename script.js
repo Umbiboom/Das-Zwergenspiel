@@ -25,25 +25,27 @@ document.addEventListener("keydown", startGame);
 
 startScreen.addEventListener("click", startGame);
 
-startScreen.addEventListener("touchstart", startGame, {
-  passive: false
+document.addEventListener("touchstart", () => {
+  document.body.classList.add("using-touch");
+  document.body.classList.remove("using-keyboard");
 });
 
-document.addEventListener("keydown", e => {
-  if (
-    ![
-      "ArrowUp",
-      "ArrowLeft",
-      "ArrowRight",
-      "KeyA",
-      "KeyD",
-      "Space"
-    ].includes(e.code)
-  ) {
+document.addEventListener("keydown", event => {
+  const steuerungstasten = [
+    "ArrowUp",
+    "ArrowLeft",
+    "ArrowRight",
+    "KeyA",
+    "KeyD",
+    "Space"
+  ];
+
+  if (!steuerungstasten.includes(event.code)) {
     return;
   }
 
   document.body.classList.add("using-keyboard");
+  document.body.classList.remove("using-touch");
 });
 
 

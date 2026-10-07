@@ -1,208 +1,110 @@
-body.using-keyboard #touchControls {
-  display: none;
+/* Grundeinstellungen */
+body {
+  margin: 0;
+  text-align: center;
+  background-image: url("Hintergrundbild.png");
+  background-position: -400px 0;
+  background-size: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-#startButton {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+h1 {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 20px 200px;
+  color: rgb(83, 255, 86);
+  background-color: rgb(0, 128, 6);
+  font-family: Arial, sans-serif;
+  font-size: 3em;
+}
 
-  z-index: 1000;
+/* Spielfeld */
+#gameWrapper {
+  position: relative;
+  display: inline-block;
+  width: 800px;
+  height: 400px;
+  overflow: visible;
+}
 
-  background: rgb(255, 255, 255);
-  color: black;
-  border: 3px solid black;
-  border-radius: 12px;
-  padding: 20px 40px;
-  font-size: 20px;
-  font-weight: bold;
-
-  animation: pulsieren 1s ease-in-out infinite;
+canvas,
+#canvas {
+  display: block;
+  margin: 0 auto;
+  border: 3px solid #444;
+  background-image: url("Coverbild.png");
+  background-size: 100%;
+  touch-action: none;
 }
 
 .zone {
   z-index: 1;
 }
 
+/* Startbildschirm und Startknopf */
+#startScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.244);
+}
+
+#startButton {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  z-index: 1000;
+  padding: 20px 40px;
+  transform: translate(-50%, -50%);
+  border: 3px solid black;
+  border-radius: 12px;
+  background: white;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  animation: pulsieren 1s ease-in-out infinite;
+}
+
 @keyframes pulsieren {
-  0% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
   }
 
   50% {
     transform: translate(-50%, -50%) scale(1.15);
   }
-
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
 }
 
-body {
-  background-image: url("Hintergrundbild.png");
-  background-position: -400px 0px;
-  background-size: 100%;
-  margin: 0;
-  text-align: center;
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-canvas,
-#canvas {
-  background-image: url("Coverbild.png");
-  background-size: 100%;
-  display: block;
-  margin: 0 auto;
-  border: 3px solid #444;
-  touch-action: none;
-}
-
-h1 {
-  color: rgb(83, 255, 86);
-  background-color: rgb(0, 128, 6);
-  padding: 20px 200px;
-  font-family: Arial, sans-serif;
-  font-size: 3em;
-  margin-top: 20px;
-  display: inline-block;
-}
-
-#gameWrapper {
-  position: relative;
-  width: 800px;
-  height: 400px;
-  display: inline-block;
-  overflow: visible;
-}
-
-#startScreen {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.244);
-  z-index: 999;
-}
-
-/* TOUCH CONTROLS */
+/* Touch-Knöpfe: zunächst ausgeblendet */
 #touchControls {
-  margin-top: -120px;
-
-  padding: 10px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
+  display: none;
   position: relative;
   z-index: 5000;
-
-  -webkit-transform: translateZ(0);
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: -120px;
+  padding: 10px;
   transform: translateZ(0);
 }
 
+/* Nach einer Bildschirmberührung anzeigen */
+body.using-touch #touchControls {
+  display: flex;
+}
+
+/* Bei Tastaturbedienung ausblenden */
+body.using-keyboard #touchControls {
+  display: none;
+}
+
 #moveButtons {
+  position: relative;
+  z-index: 5001;
   display: flex;
   gap: 10px;
-}
-
-#leftBtn,
-#rightBtn {
-  background-color: rgba(255, 255, 255, 0.25);
-
-  width: 100px;
-  height: 100px;
-
-  font-size: 28px;
-  font-weight: bold;
-
-  border-radius: 50%;
-
-  appearance: none;
-  -webkit-appearance: none;
-
-  touch-action: manipulation;
-
-  position: relative;
-  z-index: 5001;
-}
-
-#jumpBtn {
-  background-color: rgba(255, 255, 255, 0.25);
-
-  width: 100px;
-  height: 100px;
-
-  font-size: 28px;
-  font-weight: bold;
-
-  border-radius: 50%;
-
-  margin-left: 460px;
-
-  appearance: none;
-  -webkit-appearance: none;
-
-  touch-action: manipulation;
-
-  position: relative;
-  z-index: 5001;
-}
-
-#keyBtn {
- 
-  background-color: rgba(255, 255, 255, 0.25);
-
-  width: 100px;
-  height: 100px;
-
-  font-size: 28px;
-  font-weight: bold;
-
-  border-radius: 50%;
-
-  margin-left: -110px;
-  margin-top: -110px;
-
-  appearance: none;
-  -webkit-appearance: none;
-
-  touch-action: manipulation;
-
-  position: relative;
-  z-index: 5001;
-}
-
-
-
-/* iPhone / iPad */
-@supports (-webkit-touch-callout: none) {
-  #touchControls {
-    margin-top: -120px;
-    position: relative;
-    z-index: 9999;
-  }
-
-  #leftBtn,
-  #rightBtn,
-  #jumpBtn,
-  #keyBtn {
-    min-width: 100px;
-    min-height: 100px;
-  }
-}
-#touchControls {
-  margin-top: -120px;
-
-  position: relative;
-  z-index: 5000;
-}
-
-#moveButtons {
-  position: relative;
-  z-index: 5001;
 }
 
 #leftBtn,
@@ -211,35 +113,48 @@ h1 {
 #keyBtn {
   position: relative;
   z-index: 5002;
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  min-height: 100px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.25);
+  font-size: 28px;
+  font-weight: bold;
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
 }
+
+#jumpBtn {
+  margin-left: 460px;
+}
+
+#keyBtn {
+  margin-top: -110px;
+  margin-left: -110px;
+}
+
+/* Hinweis im Hochformat */
 #rotateSign {
   display: none;
-
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
   width: 800px;
   height: 800px;
-
-  margin: 300px auto 0 auto;
-
-  border-radius: 50%;
-
-  background: radial-gradient(circle, #d8b07a 0%, #b07a3e 100%);
+  margin: 300px auto 0;
+  padding: 100px;
   border: 8px solid #5a3512;
-
-  box-sizing: border-box;
-
+  border-radius: 50%;
+  background: radial-gradient(circle, #d8b07a 0%, #b07a3e 100%);
+  color: white;
   font-size: 48px;
   font-weight: bold;
-  color: white;
-  text-shadow: 3px 3px 4px black;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   text-align: center;
-
-  padding: 100px;
+  text-shadow: 3px 3px 4px black;
 }
+
 @media screen and (orientation: portrait) {
   #rotateSign {
     display: flex;
@@ -252,3 +167,10 @@ h1 {
   }
 }
 
+/* iPhone und iPad */
+@supports (-webkit-touch-callout: none) {
+  #touchControls {
+    position: relative;
+    z-index: 9999;
+  }
+}
